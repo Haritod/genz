@@ -12,9 +12,11 @@ pipeline {
                 sh 'docker build -t secondimage .'
             }
         }
-        stage('Deploy') {
+        stage('Delivery') {
             steps {
-                sh 'docker run -d -p 9100:80 secondimage '
+                sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l1g4s4j8'
+		sh 'docker build -t public.ecr.aws/l1g4s4j8/genzrepo:latest .'
+		sh 'docker push public.ecr.aws/l1g4s4j8/genzrepo:latest'
             }
         }
     }
